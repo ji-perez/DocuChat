@@ -14,34 +14,34 @@ from langchain.chains import RetrievalQA
 from langchain.llms import OpenAI
 from langchain.schema import Document
 
-# Cargar variables de entorno
+# Load environment variables
 load_dotenv()
 
-# Verificar que la API key esté configurada
+# Verify that the API key is configured
 if not os.getenv("OPENAI_API_KEY"):
-    raise ValueError("OPENAI_API_KEY no está configurada en las variables de entorno")
+    raise ValueError("OPENAI_API_KEY is not set in the environment variables")
 
 app = FastAPI(
     title="DocuChat API",
-    description="API para sistema de preguntas y respuestas sobre documentos",
+    description="API for document Q&A system",
     version="1.0.0"
 )
 
-# Configurar CORS
+# Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # En producción, especificar los orígenes permitidos
+    allow_origins=["*"],  # In production, specify the allowed origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Variables globales para el estado del sistema
+# Global variables for system state
 vector_store: Optional[Chroma] = None
 qa_chain: Optional[RetrievalQA] = None
 current_document_name: Optional[str] = None
 
-# Modelos Pydantic para las peticiones y respuestas
+# Pydantic models for requests and responses
 class QuestionRequest(BaseModel):
     question: str
 
@@ -60,23 +60,23 @@ class SystemStatusResponse(BaseModel):
     chunks_count: Optional[int] = None
 
 def get_file_loader(file_path: str, file_extension: str):
-    """Obtiene el loader apropiado según la extensión del archivo"""
+    """Gets the appropriate loader based on the file extension"""
     if file_extension.lower() == '.pdf':
         return PyPDFLoader(file_path)
     elif file_extension.lower() == '.txt':
         return TextLoader(file_path, encoding='utf-8')
     else:
-        raise ValueError(f"Formato de archivo no soportado: {file_extension}")
+        raise ValueError(f"Unsupported file format: {file_extension}")
 
 def process_document(file_path: str, file_extension: str) -> int:
-    """Procesa un documento y retorna el número de chunks creados"""
+    """Processes a document and returns the number of chunks created"""
     global vector_store, qa_chain, current_document_name
     
-    # Cargar el documento
+    # Upload the document
     loader = get_file_loader(file_path, file_extension)
     documents = loader.load()
     
-    # Dividir en chunks
+    # Split into chunks
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=1000,
         chunk_overlap=200,
@@ -84,20 +84,20 @@ def process_document(file_path: str, file_extension: str) -> int:
     )
     chunks = text_splitter.split_documents(documents)
     
-    # Crear embeddings y almacenar en ChromaDB
+    # Create embeddings and store in ChromaDB
     embeddings = OpenAIEmbeddings(
         model="text-embedding-3-small",
         openai_api_key=os.getenv("OPENAI_API_KEY")
     )
     
-    # Crear o actualizar la base de datos vectorial
+    # Create or update the vector database
     vector_store = Chroma.from_documents(
         documents=chunks,
         embedding=embeddings,
         persist_directory=os.getenv("CHROMA_DB_PATH", "./chroma_db")
     )
     
-    # Crear la cadena de QA
+    # Create the QA chain
     llm = OpenAI(
         model="gpt-4o-mini",
         temperature=0,
@@ -111,25 +111,25 @@ def process_document(file_path: str, file_extension: str) -> int:
         return_source_documents=True
     )
     
-    # Actualizar el nombre del documento actual
+    # Update the current document name
     current_document_name = os.path.basename(file_path)
     
     return len(chunks)
 
 @app.get("/")
 async def root():
-    """Endpoint raíz para verificar que la API está funcionando"""
-    return {"message": "DocuChat API está funcionando correctamente"}
+    """Root endpoint to verify the API is working"""
+    return {"message": "DocuChat API is working correctly"}
 
 @app.get("/status", response_model=SystemStatusResponse)
 async def get_status():
-    """Obtener el estado actual del sistema"""
+    """Get the current system status"""
     global vector_store, current_document_name
     
     if vector_store is None:
         return SystemStatusResponse(document_loaded=False)
     
-    # Obtener el número de documentos en la base de datos
+    # Get the number of documents in the database
     collection = vector_store._collection
     count = collection.count()
     
@@ -141,10 +141,10 @@ async def get_status():
 
 @app.post("/process-document", response_model=DocumentProcessResponse)
 async def process_document_endpoint(file: UploadFile = File(...)):
-    """Procesar un documento subido por el usuario"""
+    """Process a document uploaded by the user"""
     global current_document_name
     
-    # Verificar el tipo de archivo
+    # Verify the file type
     if not file.filename:
         raise HTTPException(status_code=400, detail="Nombre de archivo no proporcionado")
     
@@ -156,16 +156,16 @@ async def process_document_endpoint(file: UploadFile = File(...)):
         )
     
     try:
-        # Guardar el archivo temporalmente
+        # Save the temporary file
         with tempfile.NamedTemporaryFile(delete=False, suffix=file_extension) as temp_file:
             content = await file.read()
             temp_file.write(content)
             temp_file_path = temp_file.name
         
-        # Procesar el documento
+        # Process the document
         chunks_count = process_document(temp_file_path, file_extension)
         
-        # Limpiar el archivo temporal
+        # Clean up the temporary file
         os.unlink(temp_file_path)
         
         return DocumentProcessResponse(
@@ -179,7 +179,7 @@ async def process_document_endpoint(file: UploadFile = File(...)):
 
 @app.post("/ask", response_model=QuestionResponse)
 async def ask_question(request: QuestionRequest):
-    """Hacer una pregunta sobre el documento cargado"""
+    """Ask a question about the loaded document"""
     global qa_chain, vector_store
     
     if qa_chain is None or vector_store is None:
@@ -189,18 +189,18 @@ async def ask_question(request: QuestionRequest):
         )
     
     try:
-        # Obtener la respuesta usando la cadena de QA
+        # Get the response using the QA chain
         result = qa_chain({"query": request.question})
         
-        # Extraer la respuesta y las fuentes
+        # Extract the answer and the sources
         answer = result.get("result", "No se pudo generar una respuesta.")
         source_documents = result.get("source_documents", [])
         
-        # Extraer información de las fuentes
+        # Extract information from the sources
         sources = []
         for doc in source_documents:
             if hasattr(doc, 'page_content'):
-                # Tomar los primeros 100 caracteres como preview
+                # Take the first 100 characters as preview
                 preview = doc.page_content[:100] + "..." if len(doc.page_content) > 100 else doc.page_content
                 sources.append(preview)
         
@@ -211,23 +211,23 @@ async def ask_question(request: QuestionRequest):
 
 @app.delete("/clear-document")
 async def clear_document():
-    """Limpiar el documento actual y resetear el sistema"""
+    """Clean the current document and reset the system"""
     global vector_store, qa_chain, current_document_name
     
     vector_store = None
     qa_chain = None
     current_document_name = None
     
-    # Limpiar la base de datos ChromaDB
+    # Clean the ChromaDB database
     try:
         import shutil
         chroma_path = os.getenv("CHROMA_DB_PATH", "./chroma_db")
         if os.path.exists(chroma_path):
             shutil.rmtree(chroma_path)
     except Exception as e:
-        print(f"Error limpiando ChromaDB: {e}")
+        print(f"Error cleaning ChromaDB: {e}")
     
-    return {"message": "Documento limpiado exitosamente"}
+    return {"message": "Document cleaned successfully"}
 
 if __name__ == "__main__":
     import uvicorn
