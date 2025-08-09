@@ -1,131 +1,131 @@
-# **Proyecto: Sistema de Preguntas y Respuestas sobre Documentos Propios 💬**
+# **Project: Document Q&A System 💬**
 
-Versión: 1.0  
-Fecha: 2025-08-07  
-Nombre: DocuChat
+Version: 1.0  
+Date: 2025-08-07  
+Name: DocuChat
 
-## **1\. Descripción del Proyecto**
+## **1\. Project Description**
 
-### **¿De qué trata?**
+### **What is it about?**
 
-Este proyecto consiste en el desarrollo de una aplicación web que permite a los usuarios cargar sus propios documentos (como archivos PDF o de texto) y mantener una conversación con ellos. En esencia, se trata de un "chatbot" especializado que utiliza el contenido de un documento específico como su única fuente de conocimiento para responder preguntas.
+This project consists of developing a web application that allows users to upload their own documents (such as PDF or text files) and maintain a conversation with them. Essentially, it's a specialized "chatbot" that uses the content of a specific document as its only source of knowledge to answer questions.
 
-### **Objetivo Principal**
+### **Main Objective**
 
-El objetivo es construir un sistema de **Retrieval-Augmented Generation (RAG)** funcional y desacoplado. Esto permitirá a los usuarios extraer información y obtener respuestas precisas a preguntas complejas sobre sus documentos sin necesidad de leerlos por completo, aprovechando el poder de los Grandes Modelos de Lenguaje (LLMs).
+The goal is to build a functional and decoupled **Retrieval-Augmented Generation (RAG)** system. This will allow users to extract information and obtain accurate answers to complex questions about their documents without having to read them completely, leveraging the power of Large Language Models (LLMs).
 
-### **Funcionalidades Clave**
+### **Key Features**
 
-* **Carga de Documentos**: La interfaz de usuario permitirá al usuario seleccionar y subir un documento (inicialmente, .pdf y .txt).  
-* **Procesamiento de Documentos**: El sistema procesará el documento cargado, lo dividirá en fragmentos manejables y creará representaciones vectoriales (embeddings) de cada fragmento.  
-* **Interfaz de Preguntas y Respuestas**: Un área de chat donde el usuario puede escribir una pregunta.  
-* **Generación de Respuestas**: El sistema buscará los fragmentos más relevantes del documento para responder a la pregunta del usuario y utilizará un LLM para generar una respuesta coherente y contextualizada.
-
----
-
-## **2\. Tecnologías Utilizadas**
-
-El proyecto se dividirá en dos componentes principales: un backend para la lógica de IA y un frontend para la interacción con el usuario.
-
-### **Backend (API de Lógica)**
-
-* **Python 3.9+**: El lenguaje de programación base para todo el desarrollo.  
-* **LangChain**: El framework principal para orquestar todos los componentes de la lógica de IA. Se usará para cargar documentos (DocumentLoaders), dividirlos (TextSplitters), interactuar con el modelo de embeddings y el LLM, y construir la cadena de recuperación (RetrievalQA).  
-* **FastAPI**: Un framework web de alto rendimiento para construir el API REST. Será el encargado de exponer la lógica de LangChain a través de endpoints HTTP, gestionando las peticiones del frontend.  
-* **OpenAI**: Se utilizará su API para acceder a dos servicios clave:  
-  * **Modelos de Embeddings** (text-embedding-3-small): Para convertir los fragmentos de texto en vectores numéricos.  
-  * **Modelo de Lenguaje (LLM)** (gpt-3.5-turbo o gpt-4o): El cerebro que generará las respuestas en lenguaje natural.  
-* **ChromaDB**: Una base de datos vectorial de código abierto. Almacenará los vectores de los fragmentos de texto y permitirá realizar búsquedas de similitud semántica de manera eficiente.  
-* **Uvicorn**: Un servidor ASGI (Asynchronous Server Gateway Interface) que se usará para ejecutar la aplicación FastAPI.
-* **Anaconda**: La generación y gestión de los ambientes virtuales se hara con Anaconda.
-
-### **Frontend (Interfaz de Usuario)**
-
-* **Streamlit**: Un framework de Python que permite crear aplicaciones web interactivas con muy poco código. Ideal para construir la interfaz de usuario de forma rápida y sencilla.  
-* **Requests**: Una librería de Python estándar para realizar peticiones HTTP. Streamlit la usará para comunicarse con el backend de FastAPI.
+* **Document Upload**: The user interface will allow the user to select and upload a document (initially, .pdf and .txt).  
+* **Document Processing**: The system will process the uploaded document, divide it into manageable fragments, and create vector representations (embeddings) of each fragment.  
+* **Q&A Interface**: A chat area where the user can write a question.  
+* **Answer Generation**: The system will search for the most relevant fragments of the document to answer the user's question and use an LLM to generate a coherent and contextualized response.
 
 ---
 
-## **3\. Arquitectura del Sistema**
+## **2\. Technologies Used**
 
-Adoptaremos una **arquitectura cliente-servidor** desacoplada, lo que nos brinda escalabilidad y modularidad.
+The project will be divided into two main components: a backend for AI logic and a frontend for user interaction.
 
-[Imagen de a client-server architecture diagram](https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcRfljlOrd8cDb5ShcecLetBMKDNiDVc21MOiBfDtfGEI1sowEuXk69puLw05wrWSphYjcR1G7qwP50eQq9933sh53SmatFWyyqRvuhQjJWFG45Ee4A)
+### **Backend (Logic API)**
 
-* **Backend (Servidor)**: Es una aplicación **FastAPI** que actúa como el motor de la inteligencia artificial. Su única responsabilidad es recibir una pregunta, procesarla a través del flujo de LangChain y devolver una respuesta. No sabe nada sobre cómo se ve la interfaz de usuario. Contiene el LLM, la base de datos de vectores y toda la lógica de RAG.  
-* **Frontend (Cliente)**: Es una aplicación **Streamlit** que se ejecuta en el navegador del usuario (o en un servidor web). Su responsabilidad es renderizar la interfaz gráfica, capturar la entrada del usuario (la pregunta) y mostrar la respuesta. No realiza ningún procesamiento de IA; simplemente se comunica con el backend a través de su API.
+* **Python 3.9+**: The base programming language for all development.  
+* **LangChain**: The main framework for orchestrating all AI logic components. It will be used to load documents (DocumentLoaders), split them (TextSplitters), interact with the embedding model and LLM, and build the retrieval chain (RetrievalQA).  
+* **FastAPI**: A high-performance web framework for building the REST API. It will be responsible for exposing LangChain logic through HTTP endpoints, managing frontend requests.  
+* **OpenAI**: Its API will be used to access two key services:  
+  * **Embedding Models** (text-embedding-3-small): To convert text fragments into numerical vectors.  
+  * **Language Model (LLM)** (gpt-3.5-turbo or gpt-4o): The brain that will generate responses in natural language.  
+* **ChromaDB**: An open-source vector database. It will store the vectors of text fragments and allow efficient semantic similarity searches.  
+* **Uvicorn**: An ASGI (Asynchronous Server Gateway Interface) server that will be used to run the FastAPI application.
+* **Anaconda**: Virtual environment generation and management will be done with Anaconda.
 
-### **Flujo de Comunicación:**
+### **Frontend (User Interface)**
 
-1. El usuario escribe una pregunta en la interfaz de Streamlit y pulsa "Enviar".  
-2. El script de Streamlit empaqueta la pregunta en una carga útil JSON.  
-3. Streamlit envía una petición POST al endpoint /ask del backend de FastAPI.  
-4. FastAPI recibe la petición, extrae la pregunta y la pasa a la cadena RetrievalQA de LangChain.  
+* **Streamlit**: A Python framework that allows creating interactive web applications with very little code. Ideal for building the user interface quickly and easily.  
+* **Requests**: A standard Python library for making HTTP requests. Streamlit will use it to communicate with the FastAPI backend.
+
+---
+
+## **3\. System Architecture**
+
+We will adopt a decoupled **client-server architecture**, which provides us with scalability and modularity.
+
+[Client-server architecture diagram image](https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcRfljlOrd8cDb5ShcecLetBMKDNiDVc21MOiBfDtfGEI1sowEuXk69puLw05wrWSphYjcR1G7qwP50eQq9933sh53SmatFWyyqRvuhQjJWFG45Ee4A)
+
+* **Backend (Server)**: It's a **FastAPI** application that acts as the artificial intelligence engine. Its only responsibility is to receive a question, process it through the LangChain flow, and return a response. It knows nothing about how the user interface looks. It contains the LLM, vector database, and all RAG logic.  
+* **Frontend (Client)**: It's a **Streamlit** application that runs in the user's browser (or on a web server). Its responsibility is to render the graphical interface, capture user input (the question), and display the response. It performs no AI processing; it simply communicates with the backend through its API.
+
+### **Communication Flow:**
+
+1. The user writes a question in the Streamlit interface and clicks "Send".  
+2. The Streamlit script packages the question into a JSON payload.  
+3. Streamlit sends a POST request to the /ask endpoint of the FastAPI backend.  
+4. FastAPI receives the request, extracts the question, and passes it to the LangChain RetrievalQA chain.  
 5. LangChain:  
-   a. Convierte la pregunta del usuario en un vector.  
-   b. Busca en ChromaDB los fragmentos de texto cuyos vectores son más similares al vector de la pregunta.  
-   c. Envía los fragmentos recuperados y la pregunta original al LLM de OpenAI.  
-6. El LLM genera una respuesta basada en el contexto proporcionado.  
-7. FastAPI recibe la respuesta del LLM y la devuelve al frontend en formato JSON.  
-8. Streamlit recibe la respuesta, la procesa y la muestra en la interfaz para que el usuario la lea.
+   a. Converts the user's question into a vector.  
+   b. Searches in ChromaDB for text fragments whose vectors are most similar to the question vector.  
+   c. Sends the retrieved fragments and the original question to the OpenAI LLM.  
+6. The LLM generates a response based on the provided context.  
+7. FastAPI receives the LLM response and returns it to the frontend in JSON format.  
+8. Streamlit receives the response, processes it, and displays it in the interface for the user to read.
 
 ---
 
-## **4\. Plan de Desarrollo (Paso a Paso)**
+## **4\. Development Plan (Step by Step)**
 
-### **Paso 1: Configuración del Entorno**
+### **Step 1: Environment Setup**
 
-1. **Crear un directorio para el proyecto**: langchain\_qa\_project/.  
-2. Dentro, crear dos subdirectorios: backend/ y frontend/.  
-3. **Crear un entorno virtual (usando Anaconda) de Python para el backend y otro para el frontend**:  
-4. **Instalar todas las dependencias**:  
+1. **Create a project directory**: langchain\_qa\_project/.  
+2. Inside, create two subdirectories: backend/ and frontend/.  
+3. **Create a virtual environment (using Anaconda) for the backend and another for the frontend**:  
+4. **Install all dependencies**:  
    Bash  
    pip install "fastapi\[all\]" uvicorn langchain langchain-openai langchain-chroma pypdf streamlit requests python-dotenv
 
-5. **Obtener API Key de OpenAI**: Crear una cuenta en la plataforma de OpenAI, generar una clave de API y guardarla en un archivo .env en la raíz del proyecto para mantenerla segura.
+5. **Get OpenAI API Key**: Create an account on the OpenAI platform, generate an API key, and save it in a .env file in the project root to keep it secure.
 
-### **Paso 2: Desarrollo del Backend (en backend/)**
+### **Step 2: Backend Development (in backend/)**
 
-1. **Crear el archivo principal**: main.py.  
-2. **Implementar la lógica de LangChain**: Crear una función o clase que se encargue de:  
-   * Cargar un documento desde una ruta de archivo.  
-   * Dividirlo en trozos (chunks) usando RecursiveCharacterTextSplitter.  
-   * Crear los embeddings para cada trozo usando OpenAIEmbeddings.  
-   * Almacenar los trozos y sus embeddings en **ChromaDB**.  
-   * Inicializar una cadena RetrievalQA.  
-3. **Crear el API con FastAPI**:  
-   * Importar FastAPI y pydantic para definir los modelos de petición y respuesta.  
-   * Crear un endpoint POST /process-document que reciba la ruta de un archivo, lo procese y lo guarde en la base de datos vectorial.  
-   * Crear un endpoint POST /ask que reciba una pregunta (question) y use la cadena RetrievalQA para generar y devolver una respuesta.  
-4. **Probar el backend de forma aislada**: Usar herramientas como la documentación automática de FastAPI (/docs) o curl para enviar peticiones y verificar que funciona correctamente.
+1. **Create the main file**: main.py.  
+2. **Implement LangChain logic**: Create a function or class that handles:  
+   * Loading a document from a file path.  
+   * Splitting it into chunks using RecursiveCharacterTextSplitter.  
+   * Creating embeddings for each chunk using OpenAIEmbeddings.  
+   * Storing chunks and their embeddings in **ChromaDB**.  
+   * Initializing a RetrievalQA chain.  
+3. **Create the API with FastAPI**:  
+   * Import FastAPI and pydantic to define request and response models.  
+   * Create a POST /process-document endpoint that receives a file path, processes it, and saves it to the vector database.  
+   * Create a POST /ask endpoint that receives a question and uses the RetrievalQA chain to generate and return a response.  
+4. **Test the backend in isolation**: Use tools like FastAPI's automatic documentation (/docs) or curl to send requests and verify it works correctly.
 
-### **Paso 3: Desarrollo del Frontend (en frontend/)**
+### **Step 3: Frontend Development (in frontend/)**
 
-1. **Crear el archivo principal**: app.py.  
-2. **Diseñar la interfaz con Streamlit**:  
-   * Añadir un título y una descripción.  
-   * Usar st.file\_uploader para permitir al usuario subir un archivo PDF o TXT.  
-   * Una vez subido el archivo, llamar al endpoint /process-document del backend para que lo procese. Mostrar un mensaje de éxito.  
-   * Añadir un campo de texto (st.text\_input) para la pregunta del usuario y un botón (st.button).  
-3. **Conectar con el Backend**:  
-   * Cuando se presione el botón, usar la librería requests para enviar la pregunta al endpoint /ask del backend.  
-   * Mostrar un spinner (st.spinner) mientras se espera la respuesta.  
-   * Mostrar la respuesta recibida en la interfaz usando st.write o st.success.  
-   * Añadir manejo de errores por si el backend no está disponible.
+1. **Create the main file**: app.py.  
+2. **Design the interface with Streamlit**:  
+   * Add a title and description.  
+   * Use st.file\_uploader to allow the user to upload a PDF or TXT file.  
+   * Once the file is uploaded, call the /process-document endpoint of the backend to process it. Show a success message.  
+   * Add a text field (st.text\_input) for the user's question and a button (st.button).  
+3. **Connect with the Backend**:  
+   * When the button is pressed, use the requests library to send the question to the /ask endpoint of the backend.  
+   * Show a spinner (st.spinner) while waiting for the response.  
+   * Display the received response in the interface using st.write or st.success.  
+   * Add error handling in case the backend is not available.
 
-### **Paso 4: Integración y Pruebas**
+### **Step 4: Integration and Testing**
 
-1. **Ejecutar ambos servicios simultáneamente**:  
-   * En un terminal, iniciar el backend: cd backend && uvicorn main:app \--reload  
-   * En otro terminal, iniciar el frontend: cd frontend && streamlit run app.py  
-2. **Realizar pruebas de extremo a extremo**:  
-   * Abrir la app de Streamlit en el navegador.  
-   * Subir un documento.  
-   * Hacer varias preguntas (simples, complejas, sobre detalles específicos).  
-   * Verificar que las respuestas son coherentes y se basan en el contenido del documento.
+1. **Run both services simultaneously**:  
+   * In one terminal, start the backend: cd backend && uvicorn main:app \--reload  
+   * In another terminal, start the frontend: cd frontend && streamlit run app.py  
+2. **Perform end-to-end testing**:  
+   * Open the Streamlit app in the browser.  
+   * Upload a document.  
+   * Ask several questions (simple, complex, about specific details).  
+   * Verify that the responses are coherent and based on the document content.
 
-### **Paso 5 (Opcional): Contenerización con Docker**
+### **Step 5 (Optional): Docker Containerization**
 
-1. **Crear un Dockerfile para el backend**.  
-2. **Crear un Dockerfile para el frontend**.  
-3. **Crear un archivo docker-compose.yml** para orquestar y ejecutar ambos contenedores con un solo comando (docker-compose up), facilitando el despliegue y la portabilidad del proyecto.
+1. **Create a Dockerfile for the backend**.  
+2. **Create a Dockerfile for the frontend**.  
+3. **Create a docker-compose.yml file** to orchestrate and run both containers with a single command (docker-compose up), facilitating project deployment and portability.

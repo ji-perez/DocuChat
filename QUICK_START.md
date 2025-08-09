@@ -1,19 +1,19 @@
-# 🚀 Inicio Rápido - DocuChat
+# 🚀 Quick Start - DocuChat
 
-## Flujo de Trabajo Recomendado
+## Recommended Workflow
 
-### 1. Configuración Inicial (Solo una vez)
+### 1. Initial Setup (One time only)
 
 ```bash
-# 1. Configurar variables de entorno
+# 1. Configure environment variables
 cp env_template.txt .env
-# Editar .env y agregar tu OPENAI_API_KEY
+# Edit .env and add your OPENAI_API_KEY
 
-# 2. Crear entornos virtuales e instalar dependencias
+# 2. Create virtual environments and install dependencies
 ./setup_environments.sh
 ```
 
-### 2. Ejecutar el Proyecto
+### 2. Run the Project
 
 #### Terminal 1 - Backend
 ```bash
@@ -25,34 +25,34 @@ cp env_template.txt .env
 ./start_frontend.sh
 ```
 
-### 3. Usar la Aplicación
+### 3. Use the Application
 
-1. Abrir http://localhost:8501 en tu navegador
-2. Subir un documento PDF o TXT
-3. Hacer preguntas sobre el contenido
+1. Open http://localhost:8501 in your browser
+2. Upload a PDF or TXT document
+3. Ask questions about the content
 
-## 📋 Comandos Manuales (Alternativa)
+## 📋 Manual Commands (Alternative)
 
-Si prefieres hacerlo manualmente:
+If you prefer to do it manually:
 
-### Configurar Entornos
+### Configure Environments
 ```bash
-# Crear entornos
+# Create environments
 conda create -n docuchat-backend python=3.9 -y
 conda create -n docuchat-frontend python=3.9 -y
 
-# Instalar dependencias backend
+# Install backend dependencies
 conda activate docuchat-backend
 cd backend
 pip install -r requirements.txt
 
-# Instalar dependencias frontend
+# Install frontend dependencies
 conda activate docuchat-frontend
 cd frontend
 pip install -r requirements.txt
 ```
 
-### Ejecutar Servicios
+### Run Services
 ```bash
 # Terminal 1 - Backend
 conda activate docuchat-backend
@@ -65,39 +65,39 @@ cd frontend
 streamlit run app.py
 ```
 
-## 🔧 Gestión de Entornos
+## 🔧 Environment Management
 
-### Ver entornos disponibles
+### View available environments
 ```bash
 conda env list
 ```
 
-### Activar entorno
+### Activate environment
 ```bash
-conda activate docuchat-backend    # Para backend
-conda activate docuchat-frontend   # Para frontend
+conda activate docuchat-backend    # For backend
+conda activate docuchat-frontend   # For frontend
 ```
 
-### Desactivar entorno
+### Deactivate environment
 ```bash
 conda deactivate
 ```
 
-### Eliminar entorno (si necesitas recrearlo)
+### Remove environment (if you need to recreate it)
 ```bash
 conda env remove -n docuchat-backend
 conda env remove -n docuchat-frontend
 ```
 
-## 🌐 URLs Importantes
+## 🌐 Important URLs
 
 - **Frontend**: http://localhost:8501
 - **Backend**: http://localhost:8000
 - **API Docs**: http://localhost:8000/docs
 
-## ⚠️ Notas Importantes
+## ⚠️ Important Notes
 
-1. **Siempre activa el entorno virtual** antes de ejecutar los servicios
-2. **Mantén ambos servicios ejecutándose** (backend y frontend)
-3. **Configura tu API key de OpenAI** en el archivo `.env`
-4. **Usa terminales separadas** para backend y frontend
+1. **Always activate the virtual environment** before running services
+2. **Keep both services running** (backend and frontend)
+3. **Configure your OpenAI API key** in the `.env` file
+4. **Use separate terminals** for backend and frontend

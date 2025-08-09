@@ -1,168 +1,168 @@
-# 📋 Guía de Instalación - DocuChat
+# 📋 Installation Guide - DocuChat
 
-## Requisitos Previos
+## Prerequisites
 
-- **Python 3.9+** instalado en tu sistema
-- **Cuenta de OpenAI** con API key válida
-- **Git** (opcional, para clonar el repositorio)
+- **Python 3.9+** installed on your system
+- **OpenAI account** with valid API key
+- **Git** (optional, for cloning the repository)
 
-## 🚀 Instalación Rápida
+## 🚀 Quick Installation
 
-### 1. Configurar Variables de Entorno
+### 1. Configure Environment Variables
 
 ```bash
-# Copiar el template de variables de entorno
+# Copy the environment variables template
 cp env_template.txt .env
 
-# Editar el archivo .env y agregar tu API key de OpenAI
-nano .env  # o usar tu editor preferido
+# Edit the .env file and add your OpenAI API key
+nano .env  # or use your preferred editor
 ```
 
-En el archivo `.env`, reemplaza `your_openai_api_key_here` con tu API key real de OpenAI:
+In the `.env` file, replace `your_openai_api_key_here` with your real OpenAI API key:
 
 ```env
 OPENAI_API_KEY=sk-your-actual-api-key-here
 ```
 
-### 2. Instalar Dependencias
+### 2. Install Dependencies
 
-#### Opción A: Configuración automática con Anaconda (Recomendado)
+#### Option A: Automatic configuration with Anaconda (Recommended)
 
 ```bash
-# Configurar entornos virtuales y instalar dependencias
+# Configure virtual environments and install dependencies
 ./setup_environments.sh
 ```
 
-#### Opción B: Instalación manual con Anaconda
+#### Option B: Manual installation with Anaconda
 
 ```bash
-# Crear entornos virtuales
+# Create virtual environments
 conda create -n docuchat-backend python=3.9 -y
 conda create -n docuchat-frontend python=3.9 -y
 
-# Instalar dependencias del backend
+# Install backend dependencies
 conda activate docuchat-backend
 cd backend
 pip install -r requirements.txt
 
-# Instalar dependencias del frontend
+# Install frontend dependencies
 conda activate docuchat-frontend
 cd frontend
 pip install -r requirements.txt
 ```
 
-## 🏃‍♂️ Ejecutar el Proyecto
+## 🏃‍♂️ Run the Project
 
-### 1. Iniciar el Backend
+### 1. Start the Backend
 
 ```bash
-# Opción A: Usando el script
+# Option A: Using the script
 ./start_backend.sh
 
-# Opción B: Manualmente
+# Option B: Manually
 conda activate docuchat-backend
 cd backend
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-El backend estará disponible en: http://localhost:8000
-Documentación de la API: http://localhost:8000/docs
+The backend will be available at: http://localhost:8000
+API Documentation: http://localhost:8000/docs
 
-### 2. Iniciar el Frontend
+### 2. Start the Frontend
 
 ```bash
-# Opción A: Usando el script
+# Option A: Using the script
 ./start_frontend.sh
 
-# Opción B: Manualmente
+# Option B: Manually
 conda activate docuchat-frontend
 cd frontend
 streamlit run app.py --server.port 8501
 ```
 
-El frontend estará disponible en: http://localhost:8501
+The frontend will be available at: http://localhost:8501
 
-## 🔧 Configuración Avanzada
+## 🔧 Advanced Configuration
 
-### Variables de Entorno Disponibles
+### Available Environment Variables
 
-| Variable | Descripción | Valor por Defecto |
-|----------|-------------|-------------------|
-| `OPENAI_API_KEY` | Tu API key de OpenAI | Requerido |
-| `BACKEND_HOST` | Host del backend | localhost |
-| `BACKEND_PORT` | Puerto del backend | 8000 |
-| `FRONTEND_PORT` | Puerto del frontend | 8501 |
-| `CHROMA_DB_PATH` | Ruta de la base de datos ChromaDB | ./chroma_db |
+| Variable | Description | Default Value |
+|----------|-------------|---------------|
+| `OPENAI_API_KEY` | Your OpenAI API key | Required |
+| `BACKEND_HOST` | Backend host | localhost |
+| `BACKEND_PORT` | Backend port | 8000 |
+| `FRONTEND_PORT` | Frontend port | 8501 |
+| `CHROMA_DB_PATH` | ChromaDB database path | ./chroma_db |
 
-### Modelos de OpenAI Utilizados
+### OpenAI Models Used
 
 - **Embeddings**: `text-embedding-3-small`
 - **LLM**: `gpt-4o-mini`
 
-Para cambiar estos modelos, edita el archivo `backend/main.py`.
+To change these models, edit the `backend/main.py` file.
 
-## 🐛 Solución de Problemas
+## 🐛 Troubleshooting
 
-### Error: "OPENAI_API_KEY no está configurada"
+### Error: "OPENAI_API_KEY is not configured"
 
-1. Verifica que el archivo `.env` existe en el directorio raíz
-2. Asegúrate de que `OPENAI_API_KEY` esté configurada correctamente
-3. Reinicia el backend después de cambiar las variables de entorno
+1. Verify that the `.env` file exists in the root directory
+2. Make sure `OPENAI_API_KEY` is configured correctly
+3. Restart the backend after changing environment variables
 
-### Error: "Backend no disponible"
+### Error: "Backend not available"
 
-1. Verifica que el backend esté ejecutándose en http://localhost:8000
-2. Revisa los logs del backend para errores
-3. Asegúrate de que el puerto 8000 no esté ocupado por otra aplicación
+1. Verify that the backend is running at http://localhost:8000
+2. Check the backend logs for errors
+3. Make sure port 8000 is not occupied by another application
 
-### Error: "No se pudo generar una respuesta"
+### Error: "Could not generate a response"
 
-1. Verifica que tu API key de OpenAI sea válida
-2. Revisa tu saldo de créditos en OpenAI
-3. Asegúrate de que el documento se haya procesado correctamente
+1. Verify that your OpenAI API key is valid
+2. Check your OpenAI credit balance
+3. Make sure the document was processed correctly
 
-### Error de dependencias
+### Dependency errors
 
 ```bash
-# Actualizar pip
+# Update pip
 pip install --upgrade pip
 
-# Reinstalar dependencias
+# Reinstall dependencies
 pip install -r requirements.txt --force-reinstall
 ```
 
-## 📁 Estructura del Proyecto
+## 📁 Project Structure
 
 ```
 DocuChat/
-├── backend/                 # Servidor FastAPI
-│   ├── main.py             # Lógica principal del backend
-│   ├── requirements.txt    # Dependencias del backend
+├── backend/                 # FastAPI server
+│   ├── main.py             # Main backend logic
+│   ├── requirements.txt    # Backend dependencies
 │   └── __init__.py
-├── frontend/               # Aplicación Streamlit
-│   ├── app.py             # Interfaz de usuario
-│   ├── requirements.txt   # Dependencias del frontend
+├── frontend/               # Streamlit application
+│   ├── app.py             # User interface
+│   ├── requirements.txt   # Frontend dependencies
 │   └── __init__.py
-├── .env                   # Variables de entorno (crear desde env_template.txt)
-├── env_template.txt       # Template de variables de entorno
-├── start_backend.sh       # Script para iniciar backend
-├── start_frontend.sh      # Script para iniciar frontend
-├── .gitignore            # Archivos a ignorar por Git
-├── README.md             # Documentación principal
-└── INSTALLATION.md       # Esta guía
+├── .env                   # Environment variables (create from env_template.txt)
+├── env_template.txt       # Environment variables template
+├── start_backend.sh       # Script to start backend
+├── start_frontend.sh      # Script to start frontend
+├── .gitignore            # Files to ignore by Git
+├── README.md             # Main documentation
+└── INSTALLATION.md       # This guide
 ```
 
-## 🔒 Seguridad
+## 🔒 Security
 
-- **Nunca** subas tu archivo `.env` a un repositorio público
-- Mantén tu API key de OpenAI segura
-- En producción, usa variables de entorno del sistema en lugar de archivos `.env`
+- **Never** upload your `.env` file to a public repository
+- Keep your OpenAI API key secure
+- In production, use system environment variables instead of `.env` files
 
-## 📞 Soporte
+## 📞 Support
 
-Si encuentras problemas:
+If you encounter problems:
 
-1. Revisa los logs de error en la consola
-2. Verifica que todas las dependencias estén instaladas correctamente
-3. Asegúrate de que tu API key de OpenAI sea válida
-4. Consulta la documentación de la API en http://localhost:8000/docs
+1. Check the error logs in the console
+2. Verify that all dependencies are installed correctly
+3. Make sure your OpenAI API key is valid
+4. Consult the API documentation at http://localhost:8000/docs
